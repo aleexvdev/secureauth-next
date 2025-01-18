@@ -8,12 +8,11 @@ export class AppError extends Error {
   constructor(
     message: string,
     statusCode = HTTPSTATUS.INTERNAL_SERVER_ERROR,
-    erroCode?: ErrorCode
+    errorCode?: ErrorCode
   ) {
     super(message);
     this.statusCode = statusCode;
     this.errorCode = errorCode;
     Error.captureStackTrace(this, this.constructor);
   };
-;
 }
