@@ -9,10 +9,7 @@ type AsyncControllerType = (
 export const asyncHandler = (controller: AsyncControllerType): AsyncControllerType =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await controller(req, res, next);
-      if (result instanceof Promise) {
-        result.catch(next);
-      }
+      await controller(req, res, next);
     } catch (error) {
       next(error);
     }
