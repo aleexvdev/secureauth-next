@@ -1,12 +1,34 @@
-import { ErrorRequestHandler } from "express";
+import { ErrorRequestHandler, Response } from "express";
 import { HTTPSTATUS } from "../config/http.config";
 import { AppError } from "../common/utils/AppError";
+import { z } from "zod";
+import { REFRESH_PATH, removeAuthenticationCookies } from "../common/utils/cookie";
+
+const formatZodError = (res: Response, error: z.ZodError) => {
+  const { issues } = error;
+  const errorsMessage = issues.map((issue) => ({
+    field: issue.path.join("."),
+    message: issue.message,
+  }));
+  return res.status(HTTPSTATUS.BAD_REQUEST).json({
+    message: "Valdiation failed",
+    errors: errorsMessage,
+  })
+}
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next): any => {
   console.log(`Error ocurred on PATH: ${req.path}`, err);
 
+  if (req.path === REFRESH_PATH) {
+    removeAuthenticationCookies(res);
+  }
+
   if (err instanceof SyntaxError) {
     return res.status(HTTPSTATUS.BAD_REQUEST).json({ message: "Invalid JSON format, check your request body.", error: err?.message || "Unknown error." });
+  }
+
+  if (err instanceof z.ZodError) {
+    return formatZodError(res, err);
   }
 
   if (err instanceof AppError) {

@@ -4,23 +4,23 @@ import { compareValue, hashValue } from "../../common/utils/bcrypt";
 interface UserPreferences {
   enable2FA: boolean;
   emailNotification: boolean;
-  twoFactorSecret: string;
+  twoFactorSecret?: string;
 }
 
-export interface UserDocument extends UserPreferences {
+export interface UserDocument extends Document {
   name: string;
   username: string;
   email: string;
   password: string;
   isEmailVerified: boolean;
-  UserPreferences: UserPreferences;
+  userPreferences: UserPreferences;
   comparePassword(value: string): Promise<boolean>;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const UserPreferencesSchema = new Schema<UserPreferences>({
+const userPreferencesSchema = new Schema<UserPreferences>({
   enable2FA: { type: Boolean, default: false },
   emailNotification: { type: Boolean, default: true },
   twoFactorSecret: { type: String, required: false },
@@ -32,13 +32,13 @@ const userSchema = new Schema<UserDocument>({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   isEmailVerified: { type: Boolean, default: false },
-  UserPreferences: { type: UserPreferencesSchema, default: {} },
+  userPreferences: { type: userPreferencesSchema, default: {} },
   isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 }, {
   timestamps: true,
-  toJSON: { getters: true, virtuals: true },
+  toJSON: {},
 });
 
 userSchema.pre("save", async function (next) {
@@ -57,7 +57,9 @@ userSchema.methods.comparePassword = async function (value: string): Promise<boo
 userSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     delete returnedObject.password;
-    delete returnedObject.userPreference.twoFactorSecret;
+    if (returnedObject.UserPreferences && returnedObject.UserPreferences.twoFactorSecret) {
+      delete returnedObject.UserPreferences.twoFactorSecret;
+    }
     return returnedObject;
   },
 });
