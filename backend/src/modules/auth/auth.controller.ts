@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { asyncHandler } from "../../middlewares/asyncHandler";
 import { AuthService } from "./auth.service";
 import { HTTPSTATUS } from "../../config/http.config";
-import { loginSchema, registerSchema } from "../../common/validators/auth.validator";
+import { loginSchema, registerSchema, verificationEmailSchema } from "../../common/validators/auth.validator";
 import { getAccessTokenCookieOptions, getRefreshTokenCookieOptions, setAuthenticationCookies } from "../../common/utils/cookie";
 import { UnauthorizedException } from "../../common/utils/catch-error";
 
@@ -68,6 +68,16 @@ export class AuthController {
         accessToken,
         refreshToken: newRefreshToken,
       }
+    });
+  });
+
+  public verifyEmail = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+    const { code } = verificationEmailSchema.parse(req.body);
+
+    await this.authService.verifyEmail(code);
+
+    return res.status(HTTPSTATUS.OK).json({
+      message: "Email verified successfully",
     });
   });
 }
