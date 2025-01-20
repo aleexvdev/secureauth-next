@@ -8,6 +8,7 @@ interface UserPreferences {
 }
 
 export interface UserDocument extends Document {
+  _id: mongoose.Types.ObjectId;
   name: string;
   username: string;
   email: string;

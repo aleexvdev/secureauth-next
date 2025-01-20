@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import { thirtyDaysFromNow } from "../../common/utils/date-time";
 
 export interface SessionDocument extends Document {
+  _id: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
   userAgent?: string;
   expiredAt: Date;
