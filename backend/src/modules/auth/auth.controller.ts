@@ -95,4 +95,5 @@ export class AuthController {
       message: "Password reset successfully",
     });
   });
+
 }

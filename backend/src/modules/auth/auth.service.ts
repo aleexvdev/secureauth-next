@@ -231,4 +231,5 @@ export class AuthService {
       user: updatedUser,
     };
   }
+
 }
