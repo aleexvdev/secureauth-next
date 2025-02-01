@@ -9,10 +9,12 @@ import SessionModel from "../../database/models/session.model";
 import UserModel from "../../database/models/user.model";
 import VerificationCodeModel from "../../database/models/verification.model";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "../../mailers/mailer";
+import { verifyEmailTemplate } from "../../mailers/templates/template";
 
 export class AuthService {
   public async register(registerData: RegisterDto) {
-    const { name, username, email, password, confirmPassword, userAgent } = registerData;
+    const { name, username, email, password } = registerData;
 
     const userExists = await UserModel.exists({ email });
     if (userExists) {
@@ -31,6 +33,12 @@ export class AuthService {
       userId,
       type: VerificationEnumm.EMAIL_VERIFICATION,
       expiresAt: fortyFiveMinutesFromNow(),
+    });
+
+    const verifyEmailUrl = `${config.APP_ORIGIN}/confirm-account?code=${verificationCode.code}`;
+    await sendEmail({
+      to: newUser.email,
+      ...verifyEmailTemplate(verifyEmailUrl)
     });
 
     return {
