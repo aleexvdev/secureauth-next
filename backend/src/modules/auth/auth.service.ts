@@ -1,16 +1,16 @@
 import { ErrorCode } from "../../common/enums/error-code.enum";
 import { VerificationEnumm } from "../../common/enums/verification-code.enum";
 import { LoginDto, RegisterDto } from "../../common/interface/auth.interface";
-import { BadRequestException, UnauthorizedException } from "../../common/utils/catch-error";
-import { calculateExpirationDate, fortyFiveMinutesFromNow, ON_DAY_IN_MS } from "../../common/utils/date-time";
+import { BadRequestException, HttpException, InternalServerException, UnauthorizedException } from "../../common/utils/catch-error";
+import { anHourFromNow, calculateExpirationDate, fortyFiveMinutesFromNow, ON_DAY_IN_MS, threeMinutesAgo } from "../../common/utils/date-time";
 import { RefreshTokenPayload, refreshTokenSignOptions, signJwtToken, verifyJwtToken } from "../../common/utils/jwt";
 import { config } from "../../config/app.config";
 import SessionModel from "../../database/models/session.model";
 import UserModel from "../../database/models/user.model";
 import VerificationCodeModel from "../../database/models/verification.model";
-import jwt from "jsonwebtoken";
 import { sendEmail } from "../../mailers/mailer";
-import { verifyEmailTemplate } from "../../mailers/templates/template";
+import { passwordResetTemplate, verifyEmailTemplate } from "../../mailers/templates/template";
+import { HTTPSTATUS } from "../../config/http.config";
 
 export class AuthService {
   public async register(registerData: RegisterDto) {
@@ -152,4 +152,51 @@ export class AuthService {
     };
   }
 
+  public async forgotPassword(email: string) {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      throw new BadRequestException("User not found", ErrorCode.AUTH_USER_NOT_FOUND);
+    }
+
+    const timeAgo = threeMinutesAgo();
+    const maxAttempts = 2;
+
+    const count = await VerificationCodeModel.countDocuments({
+      userId: user._id,
+      type: VerificationEnumm.PASSWORD_RESET,
+      expiresAt: { $gt: timeAgo },
+      attempts: { $lt: maxAttempts },
+    });
+
+    if (count >= maxAttempts) {
+      throw new HttpException(
+        "Too many attempts, try again later",
+        HTTPSTATUS.TOO_MANY_REQUESTS, 
+        ErrorCode.AUTH_TOO_MANY_ATTEMPTS
+      );
+    }
+
+    const expiresAt = anHourFromNow();
+    const validCode = await VerificationCodeModel.create({
+      userId: user._id,
+      type: VerificationEnumm.PASSWORD_RESET,
+      expiresAt,
+      attempts: 1,
+    });
+
+    const resetPasswordUrl = `${config.APP_ORIGIN}/reset-password?code=${validCode.code}&exp=${expiresAt.getTime()}`;
+    const { data, error } = await sendEmail({
+      to: user.email,
+      ...passwordResetTemplate(resetPasswordUrl)
+    });
+
+    if (!data?.id) {
+      throw new InternalServerException(`${error?.name} ${error?.message}`);
+    }
+
+    return {
+      url: resetPasswordUrl,
+      emailId: data.id,
+    };
+  }
 }

@@ -1,5 +1,5 @@
 import { config } from "../config/app.config";
-import { resendClient } from "./resendClient";
+import { resend } from "./resendClient";
 
 type Params = {
   to: string | string[];
@@ -9,7 +9,7 @@ type Params = {
   from?: string;
 }
 
-const mailerSender = config.NODE_ENV === "development" ? 
+const mailerSender = config.NODE_ENV === "development" ?
   "no-reply <onboarding@resend.dev>" : `no-reply <${config.EMAIL.MAILER_SENDER}>`;
 
 export const sendEmail = async ({
@@ -18,12 +18,11 @@ export const sendEmail = async ({
   subject,
   text,
   html
-}: Params) => {
-  await resendClient.emails.send({
+}: Params) =>
+  await resend.emails.send({
     from,
     to: Array.isArray(to) ? to : [to],
     text,
     subject,
     html,
   });
-};
