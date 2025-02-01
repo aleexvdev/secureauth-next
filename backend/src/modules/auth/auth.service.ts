@@ -1,6 +1,6 @@
 import { ErrorCode } from "../../common/enums/error-code.enum";
 import { VerificationEnumm } from "../../common/enums/verification-code.enum";
-import { LoginDto, RegisterDto } from "../../common/interface/auth.interface";
+import { LoginDto, RegisterDto, ResetPasswordDto } from "../../common/interface/auth.interface";
 import { BadRequestException, HttpException, InternalServerException, UnauthorizedException } from "../../common/utils/catch-error";
 import { anHourFromNow, calculateExpirationDate, fortyFiveMinutesFromNow, ON_DAY_IN_MS, threeMinutesAgo } from "../../common/utils/date-time";
 import { RefreshTokenPayload, refreshTokenSignOptions, signJwtToken, verifyJwtToken } from "../../common/utils/jwt";
@@ -11,6 +11,7 @@ import VerificationCodeModel from "../../database/models/verification.model";
 import { sendEmail } from "../../mailers/mailer";
 import { passwordResetTemplate, verifyEmailTemplate } from "../../mailers/templates/template";
 import { HTTPSTATUS } from "../../config/http.config";
+import { hashValue } from "../../common/utils/bcrypt";
 
 export class AuthService {
   public async register(registerData: RegisterDto) {
@@ -197,6 +198,37 @@ export class AuthService {
     return {
       url: resetPasswordUrl,
       emailId: data.id,
+    };
+  }
+
+  public async resetPassword(resetPasswordData: ResetPasswordDto) {
+    const { password, verificationCode } = resetPasswordData;
+    const validCode = await VerificationCodeModel.findOne({
+      code: verificationCode,
+      type: VerificationEnumm.PASSWORD_RESET,
+      expiresAt: { $gt: new Date() }
+    });
+
+    if (!validCode) {
+      throw new BadRequestException("Invalid or expired verification code");
+    }
+
+    const hashedPassowrd = await hashValue(password);
+    const updatedUser = await UserModel.findByIdAndUpdate(validCode.userId, {
+      hashedPassowrd,
+    }, {
+      new: true,
+    });
+
+    if (!updatedUser) {
+      throw new BadRequestException("Unable to reset password");
+    }
+
+    await validCode.deleteOne();
+    await SessionModel.deleteMany({ userId: updatedUser._id });
+
+    return {
+      user: updatedUser,
     };
   }
 }

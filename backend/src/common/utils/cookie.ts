@@ -48,7 +48,7 @@ export const setAuthenticationCookies = ({
   return res;
 };
 
-export const removeAuthenticationCookies = (res: Response): Response => {
+export const clearAuthenticationCookies = (res: Response): Response => {
   res.clearCookie("accessToken");
   res.clearCookie("refreshToken", { path: REFRESH_PATH });
   return res;
