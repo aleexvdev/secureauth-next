@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { asyncHandler } from "../../middlewares/asyncHandler";
 import { AuthService } from "./auth.service";
 import { HTTPSTATUS } from "../../config/http.config";
 import { emailSchema, loginSchema, registerSchema, resetPasswordSchema, verificationEmailSchema } from "../../common/validators/auth.validator";
 import { getAccessTokenCookieOptions, getRefreshTokenCookieOptions, clearAuthenticationCookies, setAuthenticationCookies } from "../../common/utils/cookie";
-import { UnauthorizedException } from "../../common/utils/catch-error";
+import { NotFoundException, UnauthorizedException } from "../../common/utils/catch-error";
 
 export class AuthController {
   private authService: AuthService;
@@ -28,7 +28,7 @@ export class AuthController {
     });
   });
 
-  public login = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  public login = asyncHandler(async (req: Request, res: Response): Promise<any> => {
 
     const userAgent = req.headers["user-agent"];
     const body = loginSchema.parse({
@@ -96,4 +96,14 @@ export class AuthController {
     });
   });
 
+  public logout = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+    const sessionId = req.sessionId;
+    if (!sessionId) {
+      throw new NotFoundException("Session not found");
+    }
+    await this.authService.logout(sessionId);
+    return clearAuthenticationCookies(res).status(HTTPSTATUS.OK).json({
+      message: "Logged out successfully",
+    });
+  });
 }

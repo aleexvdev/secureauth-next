@@ -2,7 +2,7 @@ import { ErrorRequestHandler, Response } from "express";
 import { HTTPSTATUS } from "../config/http.config";
 import { AppError } from "../common/utils/AppError";
 import { z } from "zod";
-import { REFRESH_PATH, removeAuthenticationCookies } from "../common/utils/cookie";
+import { REFRESH_PATH, clearAuthenticationCookies } from "../common/utils/cookie";
 
 const formatZodError = (res: Response, error: z.ZodError) => {
   const { issues } = error;
@@ -20,7 +20,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next): any => {
   console.log(`Error ocurred on PATH: ${req.path}`, err);
 
   if (req.path === REFRESH_PATH) {
-    removeAuthenticationCookies(res);
+    clearAuthenticationCookies(res);
   }
 
   if (err instanceof SyntaxError) {
