@@ -11,6 +11,7 @@ import connectDB from "./database/database";
 import passport from "./middlewares/passport";
 import { authenticateJwt } from "./common/strategies/jwt.strategy";
 import sessionRoutes from "./modules/session/session.routes";
+import mfaRoutes from "./modules/mfa/mfa.routes";
 
 const app = express();
 const BASE_PATH = config.BASE_PATH;
@@ -33,6 +34,7 @@ app.get("/", asyncHandler(async (req: Request, res: Response, next: NextFunction
 
 app.use(`${BASE_PATH}/auth`, authRoutes);
 app.use(`${BASE_PATH}/session`, authenticateJwt, sessionRoutes);
+app.use(`${BASE_PATH}/mfa`, authenticateJwt, mfaRoutes);
 
 app.use(errorHandler);
 

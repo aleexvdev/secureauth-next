@@ -49,17 +49,23 @@ export class AuthService {
 
   public async login(loginData: LoginDto) {
     const { email, password, userAgent } = loginData;
-
     const user = await UserModel.findOne({ email });
-
     if (!user) {
       throw new BadRequestException("Invalid email or password provided", ErrorCode.AUTH_USER_NOT_FOUND);
     }
 
     const isPasswordCorrect = await user.comparePassword(password);
-
     if (!isPasswordCorrect) {
       throw new BadRequestException("Invalid email or password provided", ErrorCode.AUTH_USER_NOT_FOUND);
+    }
+
+    if (user.userPreferences.enable2FA) { 
+      return {
+        user: null,
+        mfaRequired: true,
+        accessToken: "",
+        refreshToken: "",
+      }
     }
 
     const session = await SessionModel.create({
