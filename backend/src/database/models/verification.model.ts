@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { VerificationEnumm } from "../../common/enums/verification-code.enum";
 import { generateUUID } from "../../common/utils/uuid";
 

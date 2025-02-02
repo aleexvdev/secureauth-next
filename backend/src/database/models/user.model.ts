@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 import { compareValue, hashValue } from "../../common/utils/bcrypt";
 
 interface UserPreferences {
@@ -8,7 +8,6 @@ interface UserPreferences {
 }
 
 export interface UserDocument extends Document {
-  _id: mongoose.Types.ObjectId;
   name: string;
   username: string;
   email: string;
@@ -66,5 +65,4 @@ userSchema.set("toJSON", {
 });
 
 const UserModel = mongoose.model<UserDocument>("User", userSchema);
-
 export default UserModel;
