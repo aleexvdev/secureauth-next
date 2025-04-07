@@ -182,7 +182,7 @@ export default function SignIn() {
             <Separator className="w-full" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-muted-foreground">
+            <span className="bg-white px-2 text-muted-foreground font-medium">
               Or continue with
             </span>
           </div>

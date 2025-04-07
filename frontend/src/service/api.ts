@@ -8,7 +8,6 @@ type Logintype = {
 type RegisterType = {
   email: string;
   password: string;
-  name: string;
   username: string;
   confirmPassword: string;
 }
