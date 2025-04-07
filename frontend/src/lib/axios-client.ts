@@ -11,7 +11,7 @@ const API = axios.create(options);
 API.interceptors.request.use(
   (response) => { return response; },
   (error) => {
-    const { data, status } = error;
+    const { data, status } = error.response;
     if (data === "Unauthorized" && status === 401) {
 
     }
