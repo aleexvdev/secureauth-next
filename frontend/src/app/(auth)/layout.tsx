@@ -1,5 +1,7 @@
 "use client";
 
+import { PageInicio } from "@/components/page-inicio";
+
 export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <main className="flex min-h-screen flex-col md:flex-row">
@@ -7,7 +9,7 @@ export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         {children}
       </div>
       <div className="hidden w-full bg-gradient-to-br from-violet-500 to-indigo-800 md:block md:w-1/2">
-        dasd
+        <PageInicio />
       </div>
     </main>
   );
