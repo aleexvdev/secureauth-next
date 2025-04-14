@@ -30,7 +30,7 @@ import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 
 export default function SignUp() {
-  const [isSubmited, setIsSubmited] = useState<boolean>(false);
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const { mutate, isPending } = useMutation({
     mutationFn: registerMutationFn,
@@ -69,7 +69,7 @@ export default function SignUp() {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     mutate(values, {
       onSuccess: () => {
-        setIsSubmited(true);
+        setIsSubmitted(true);
       },
       onError: (error) => {
         console.log(error);
@@ -78,7 +78,7 @@ export default function SignUp() {
           description: error.message,
           variant: "destructive",
         });
-        setIsSubmited(false);
+        setIsSubmitted(false);
       },
     });
   };
@@ -96,7 +96,7 @@ export default function SignUp() {
           Your complete authentication solution
         </p>
       </div>
-      {!isSubmited ? (
+      {!isSubmitted ? (
         <div className="space-y-6">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight">
@@ -306,7 +306,6 @@ export default function SignUp() {
           <div className="size-[48px]">
             <MailCheckIcon size="48px" className="animate-bounce text-violet-700" />
           </div>
-          
           <h2 className="text-xl tracking-[-0.16px] dark:text-[#fcfdffef] font-bold">
             Check your email
           </h2>

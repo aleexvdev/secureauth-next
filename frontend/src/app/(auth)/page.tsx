@@ -132,7 +132,7 @@ export default function SignIn() {
                         Password
                       </FormLabel>
                       <Link
-                        href="/reset-password?email="
+                        href={`/forgot-password?email=${form.getValues().email}`}
                         className="text-xs text-violet-600 hover:text-violet-700 font-medium"
                       >
                         Forgot your password?
