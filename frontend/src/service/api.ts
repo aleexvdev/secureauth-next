@@ -30,3 +30,5 @@ export const registerMutationFn = async (data: RegisterType) => await API.post("
 export const forgotPasswordMutationFn = async (data: ForgotPasswordType) => await API.post("/auth/password/forgot", data);
 export const resetPasswordMutationFn = async (data: ResetPasswordType) => await API.post("/auth/password/reset", data);
 export const confirmAccountMutationFn = async (data: ConfirmAccountType) => await API.post("/auth/verify/email", data);
+
+export const getUserSessionQueryFn = async () => await API.get(`/session/`);
