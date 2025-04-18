@@ -29,7 +29,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -84,7 +84,6 @@ const navItems: NavItem[] = [
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const pathname = usePathname();
   const [open, setOpen] = useState<boolean>(false);
-  const [mounted, setMounted] = useState<boolean>(false);
 
   const user = {
     name: "Alexander Valverde",
@@ -96,14 +95,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       enable2FA: true,
     },
   };
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
