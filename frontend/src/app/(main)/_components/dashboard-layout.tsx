@@ -78,7 +78,7 @@ const navItems: NavItem[] = [
     title: "Perfil",
     href: "/profile",
     icon: User,
-  }
+  },
 ];
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
@@ -98,7 +98,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-md px-4 md:px-6">
+      <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background backdrop-blur-md px-4 md:px-6">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="md:hidden">
@@ -190,7 +190,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         </div>
       </header>
       <div className="flex flex-1">
-        <aside className="hidden w-64 shrink-0 border-r bg-card/50 md:block">
+        <aside className="hidden w-64 shrink-0 border-r bg-card/50 md:block fixed top-16 bottom-0 overflow-y-auto">
           <div className="flex h-full flex-col gap-2 p-4">
             <nav className="grid gap-1 p-2">
               {navItems.map((item, index) => (
@@ -198,10 +198,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   key={index}
                   href={item.href}
                   className={cn(
-                    "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-accent hover:text-accent-foreground focus-ring",
+                    "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all focus-ring",
                     pathname === item.href
                       ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                   )}
                 >
                   <item.icon
@@ -240,7 +240,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </div>
           </div>
         </aside>
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto ml-0 md:ml-64 animate-in bg-background/80">
           <div className="container mx-auto p-4 md:p-6 animate-in">
             {children}
           </div>
