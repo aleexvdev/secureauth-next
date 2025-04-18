@@ -1,17 +1,19 @@
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+"use client";
+
 import { AuthProvider } from "@/providers/AuthProvider";
 import React from "react";
-import Asidebar from "./_components/Asidebar";
+import DashboardLayout from "./_components/dashboard-layout";
 
-const MainLayout = ({ children }: { children: React.ReactNode }) => {
+interface MainLayoutProps {
+  children: React.ReactNode;
+}
+
+const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <AuthProvider>
-      <SidebarProvider>
-        <Asidebar />
-        <SidebarInset>
-          <main className="flex min-h-screen flex-col md:flex-row">{children}</main>
-        </SidebarInset>
-      </SidebarProvider>
+      <DashboardLayout>
+        {children}
+      </DashboardLayout>
     </AuthProvider>
   );
 };
