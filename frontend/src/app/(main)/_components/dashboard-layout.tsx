@@ -54,19 +54,9 @@ const navItems: NavItem[] = [
     icon: Home,
   },
   {
-    title: "Perfil",
-    href: "/profile",
-    icon: User,
-  },
-  {
-    title: "Configuración",
-    href: "/settings",
-    icon: Settings,
-  },
-  {
-    title: "Apariencia",
-    href: "/appearance",
-    icon: Palette,
+    title: "Seguridad MFA",
+    href: "/mfa",
+    icon: Shield,
   },
   {
     title: "Sesiones",
@@ -75,10 +65,20 @@ const navItems: NavItem[] = [
     badge: 3,
   },
   {
-    title: "Seguridad MFA",
-    href: "/mfa",
-    icon: Shield,
+    title: "Apariencia",
+    href: "/appearance",
+    icon: Palette,
   },
+  {
+    title: "Configuración",
+    href: "/settings",
+    icon: Settings,
+  },
+  {
+    title: "Perfil",
+    href: "/profile",
+    icon: User,
+  }
 ];
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
