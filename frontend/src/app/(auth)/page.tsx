@@ -68,7 +68,7 @@ export default function SignIn() {
     <section className="w-full max-w-md space-y-8">
       <div className="space-y-2 text-center">
         <div className="flex items-center justify-center gap-2">
-          <Logo />
+          <Logo className="bg-violet-700 text-white" />
           <h1 className="text-3xl font-bold tracking-tight text-violet-700">
             SecureAuth
           </h1>
@@ -79,7 +79,7 @@ export default function SignIn() {
       </div>
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight">Sign in</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-black">Sign in</h2>
           <p className="text-sm text-muted-foreground">
             Enter your credentials to access your account.
           </p>
@@ -94,7 +94,7 @@ export default function SignIn() {
                   <FormItem>
                     <FormLabel
                       htmlFor="email"
-                      className="text-foreground dark:text-[#f1f7feb5] text-sm"
+                      className="text-black text-sm"
                     >
                       Email
                     </FormLabel>
@@ -108,7 +108,7 @@ export default function SignIn() {
                           {...field}
                           autoComplete="off"
                           aria-required="true"
-                          className="pl-10"
+                          className="pl-10 border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:outline-none"
                           required
                         />
                       </div>
@@ -127,7 +127,7 @@ export default function SignIn() {
                     <div className="flex items-center justify-between">
                       <FormLabel
                         htmlFor="password"
-                        className="text-foreground dark:text-[#f1f7feb5] text-sm"
+                        className="text-black text-sm"
                       >
                         Password
                       </FormLabel>
@@ -148,7 +148,7 @@ export default function SignIn() {
                           {...field}
                           autoComplete="off"
                           aria-required="true"
-                          className="pl-10"
+                          className="pl-10 border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-violet-200"
                           required
                         />
                       </div>
@@ -179,7 +179,7 @@ export default function SignIn() {
         </Form>
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <Separator className="w-full" />
+            <Separator className="w-full bg-violet-300" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-white px-2 text-muted-foreground font-medium">
@@ -190,27 +190,27 @@ export default function SignIn() {
         <div className="flex gap-2 items-center justify-center">
           <Button
             variant="outline"
-            className="w-full h-[40px]"
+            className="w-full h-[40px] bg-white hover:bg-violet-50 border-violet-200"
             title="Sign in with Google"
           >
             <img src="./google.svg" alt="google" />
           </Button>
           <Button
             variant="outline"
-            className="w-full h-[40px]"
+            className="w-full h-[40px] bg-white hover:bg-violet-50 border-violet-200"
             title="Sign in with Facebook"
           >
             <img src="./facebook.svg" alt="facebook" />
           </Button>
           <Button
             variant="outline"
-            className="w-full h-[40px]"
+            className="w-full h-[40px] bg-white hover:bg-violet-50 border-violet-200"
             title="Sign in with Apple"
           >
             <img src="./apple.svg" alt="apple" />
           </Button>
         </div>
-        <div className="text-center text-sm">
+        <div className="text-center text-sm text-black">
           Don&apos;t have an account?{" "}
           <Link
             href="/signup"
@@ -219,14 +219,14 @@ export default function SignIn() {
             Sign up
           </Link>
         </div>
-        <div className="flex gap-2 items-center justify-center">
+        <div className="flex gap-2 items-center justify-center text-black">
           <p className="text-xs font-normal mt-4">
             By signing up, you agree to our{" "}
-            <a className="text-primary hover:underline font-medium" href="#">
+            <a className="text-violet-600 hover:underline font-medium" href="#">
               Terms of Service
             </a>{" "}
             and{" "}
-            <a className="text-primary hover:underline font-medium" href="#">
+            <a className="text-violet-600 hover:underline font-medium" href="#">
               Privacy Policy
             </a>
             .
