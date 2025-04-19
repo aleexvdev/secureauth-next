@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
+  EyeIcon,
   Loader,
   Lock,
   Mail,
@@ -29,8 +30,19 @@ import { Logo } from "@/components/logo/logo";
 import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 
+type ShowPassword = {
+  showPassword: boolean;
+  showConfirmPassword: boolean;
+};
+
+const initialStatePassword: ShowPassword = {
+  showPassword: false,
+  showConfirmPassword: false,
+};
+
 export default function SignUp() {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [passwordState, setPasswordState] = useState<ShowPassword>(initialStatePassword);
 
   const { mutate, isPending } = useMutation({
     mutationFn: registerMutationFn,
@@ -134,7 +146,7 @@ export default function SignUp() {
                             autoComplete="off"
                             aria-required="true"
                             required
-                            className="pl-10 border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:outline-none"
+                            className="pl-10 text-black border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:outline-none"
                           />
                         </div>
                       </FormControl>
@@ -163,7 +175,7 @@ export default function SignUp() {
                             autoComplete="off"
                             aria-required="true"
                             required
-                            className="pl-10 border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:outline-none"
+                            className="pl-10 text-black border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:outline-none"
                           />
                         </div>
                       </FormControl>
@@ -189,14 +201,24 @@ export default function SignUp() {
                           <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
                           <Input
                             id="password"
-                            type="password"
+                            type={passwordState.showPassword ? "text" : "password"}
                             placeholder="••••••••••••"
                             {...field}
                             autoComplete="off"
                             aria-required="true"
                             required
-                            className="pl-10 border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:outline-none"
+                            className="pl-10 text-black border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:outline-none"
                           />
+                          <button
+                            type="button"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground"
+                            onClick={() => setPasswordState((prevState) => ({
+                              ...prevState,
+                              showPassword: !prevState.showPassword,
+                            }))}
+                          >
+                            <EyeIcon className="h-5 w-5" />
+                          </button>
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -221,14 +243,24 @@ export default function SignUp() {
                           <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
                           <Input
                             id="confirmPassword"
-                            type="password"
+                            type={passwordState.showConfirmPassword ? "text" : "password"}
                             placeholder="••••••••••••"
                             {...field}
                             autoComplete="off"
                             aria-required="true"
                             required
-                            className="pl-10 border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:outline-none"
+                            className="pl-10 text-black border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:outline-none"
                           />
+                          <button
+                            type="button"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground"
+                            onClick={() => setPasswordState((prevState) => ({
+                              ...prevState,
+                              showConfirmPassword: !prevState.showConfirmPassword,
+                            }))}
+                          >
+                            <EyeIcon className="h-5 w-5" />
+                          </button>
                         </div>
                       </FormControl>
                       <FormMessage />

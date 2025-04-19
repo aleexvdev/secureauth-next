@@ -16,13 +16,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Loader, Lock, Mail } from "lucide-react";
+import { ArrowRight, EyeIcon, Loader, Lock, Mail } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
 
 export default function SignIn() {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const router = useRouter();
   const { mutate, isPending } = useMutation({
     mutationFn: loginMutationFn,
@@ -108,7 +110,7 @@ export default function SignIn() {
                           {...field}
                           autoComplete="off"
                           aria-required="true"
-                          className="pl-10 border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:outline-none"
+                          className="pl-10 text-black border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:outline-none"
                           required
                         />
                       </div>
@@ -143,14 +145,21 @@ export default function SignIn() {
                         <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
                         <Input
                           id="password"
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           placeholder="••••••••••••"
                           {...field}
                           autoComplete="off"
                           aria-required="true"
-                          className="pl-10 border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-violet-200"
+                          className="text-black pl-10 border-violet-200 focus:border-violet-200 focus:ring-violet-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-violet-200"
                           required
                         />
+                        <button
+                          type="button"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          <EyeIcon className="h-5 w-5" />
+                        </button>
                       </div>
                     </FormControl>
                     <FormMessage />
