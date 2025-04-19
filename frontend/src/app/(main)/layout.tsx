@@ -11,9 +11,7 @@ interface MainLayoutProps {
 const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <AuthProvider>
-      <DashboardLayout>
-        {children}
-      </DashboardLayout>
+      <DashboardLayout>{children}</DashboardLayout>
     </AuthProvider>
   );
 };

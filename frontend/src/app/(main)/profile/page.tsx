@@ -13,10 +13,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useLanguage } from "@/providers/LanguageProvider";
 import { Calendar, Edit, User } from "lucide-react";
 
 const ProfilePage = () => {
 
+  const { t } = useLanguage();
   const user = {
     name: "Alexander Valverde",
     email: "alex@example.com",
@@ -31,16 +33,14 @@ const ProfilePage = () => {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Perfil</h1>
-        <p className="text-muted-foreground">
-          Gestiona tu información personal y preferencias
-        </p>
+        <h1 className="text-3xl font-bold tracking-tight">{t("profile.title")}</h1>
+        <p className="text-muted-foreground">{t("profile.manage_info")}</p>
       </div>
       <div className="grid gap-6 md:grid-cols-[1fr_2fr]">
         <Card>
           <CardHeader>
-            <CardTitle>Tu Perfil</CardTitle>
-            <CardDescription>Información básica de tu cuenta</CardDescription>
+            <CardTitle className="text-xl">{t("profile.your_profile")}</CardTitle>
+            <CardDescription>{t("profile.basic_info")}</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-4">
             <Avatar className="h-24 w-24">
@@ -58,66 +58,66 @@ const ProfilePage = () => {
             </div>
             <Button variant="outline" size="sm" className="gap-2">
               <Edit className="h-4 w-4" />
-              Cambiar foto
+              {t("profile.change_photo")}
             </Button>
           </CardContent>
           <CardFooter className="flex flex-col gap-2">
             <div className="flex items-center gap-2 text-sm">
               <User className="h-4 w-4 text-muted-foreground" />
-              <span>Miembro desde Enero 2023</span>
+              <span>{t("profile.member_since", { date: new Date().toLocaleDateString() })}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span>Último acceso: Hoy, 10:45 AM</span>
+              <span>{t("profile.last_login", { date: new Date().toLocaleDateString() })}</span>
             </div>
           </CardFooter>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Información Personal</CardTitle>
-            <CardDescription>Actualiza tu información personal</CardDescription>
+            <CardTitle className="text-xl">{t("profile.personal_info")}</CardTitle>
+            <CardDescription>{t("profile.update_personal")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="first-name">Nombre</Label>
+                <Label htmlFor="first-name">{t("profile.first_name")}</Label>
                 <Input id="first-name" defaultValue="Usuario" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="last-name">Apellido</Label>
-                <Input id="last-name" defaultValue="Ejemplo" />
+                <Label htmlFor="last-name">{t("profile.last_name")}</Label>
+                <Input id="last-name" defaultValue="Example" />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Correo electrónico</Label>
-              <Input id="email" type="email" defaultValue="usuario@ejemplo.com" />
+              <Label htmlFor="email">{t("profile.email")}</Label>
+              <Input id="email" type="email" defaultValue="user@example.com" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Teléfono</Label>
+              <Label htmlFor="phone">{t("profile.phone")}</Label>
               <Input id="phone" type="tel" defaultValue="+51 900 000 000" />
             </div>
             <Separator />
             <div className="space-y-2">
-              <Label htmlFor="address">Dirección</Label>
+              <Label htmlFor="address">{t("profile.address")}</Label>
               <Input id="address" defaultValue="Calle Ejemplo, 123" />
             </div>
             <div className="grid gap-4 md:grid-cols-3">
               <div className="space-y-2">
-                <Label htmlFor="city">Ciudad</Label>
+                <Label htmlFor="city">{t("profile.city")}</Label>
                 <Input id="city" defaultValue="Lima" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="state">Provincia</Label>
+                <Label htmlFor="state">{t("profile.state")}</Label>
                 <Input id="state" defaultValue="Huaura" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="zip">Código Postal</Label>
+                <Label htmlFor="zip">{t("profile.postal_code")}</Label>
                 <Input id="zip" defaultValue="28001" />
               </div>
             </div>
           </CardContent>
           <CardFooter>
-            <Button>Guardar Cambios</Button>
+            <Button>{t("profile.save_changes")}</Button>
           </CardFooter>
         </Card>
       </div>

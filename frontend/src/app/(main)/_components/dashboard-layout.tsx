@@ -14,9 +14,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/providers/LanguageProvider";
 import {
   Bell,
   ChevronRight,
+  Globe,
   Home,
   Laptop,
   LogOut,
@@ -49,33 +51,33 @@ interface MobileNavProps {
 
 const navItems: NavItem[] = [
   {
-    title: "Inicio",
+    title: "nav.home",
     href: "/home",
     icon: Home,
   },
   {
-    title: "Seguridad MFA",
+    title: "nav.mfa",
     href: "/mfa",
     icon: Shield,
   },
   {
-    title: "Sesiones",
+    title: "nav.sessions",
     href: "/sessions",
     icon: Laptop,
     badge: 3,
   },
   {
-    title: "Apariencia",
+    title: "nav.appearance",
     href: "/appearance",
     icon: Palette,
   },
   {
-    title: "Configuración",
+    title: "nav.settings",
     href: "/settings",
     icon: Settings,
   },
   {
-    title: "Perfil",
+    title: "nav.profile",
     href: "/profile",
     icon: User,
   },
@@ -84,6 +86,7 @@ const navItems: NavItem[] = [
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const pathname = usePathname();
   const [open, setOpen] = useState<boolean>(false);
+  const { t, language, setLanguage } = useLanguage();
 
   const user = {
     name: "Alexander Valverde",
@@ -118,15 +121,45 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="relative">
+                <Globe className="h-5 w-5" />
+                <span className="sr-only">{t("nav.language")}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>{t("nav.language")}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => setLanguage("en")}
+                className={cn(
+                  "cursor-pointer",
+                  language === "en" && "bg-accent"
+                )}
+              >
+                {t("appearance.language_english")}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setLanguage("es")}
+                className={cn(
+                  "cursor-pointer",
+                  language === "es" && "bg-accent"
+                )}
+              >
+                {t("appearance.language_spanish")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="relative">
                 <Bell className="h-5 w-5" />
-                <span className="sr-only">Notificaciones</span>
+                <span className="sr-only">{t("nav.notifications")}</span>
                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground">
                   3
                 </span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-80">
-              <DropdownMenuLabel>Notificaciones</DropdownMenuLabel>
+              <DropdownMenuLabel>{t("common.notifications")}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <div className="max-h-80 overflow-auto">
                 {[1, 2, 3].map((i) => (
@@ -136,14 +169,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   >
                     <div className="flex w-full justify-between">
                       <span className="font-medium">
-                        Nuevo inicio de sesión
+                        {t("sessions.login_history")}
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        Hace {i}h
+                        {i}h {t("sessions.ago")}
                       </span>
                     </div>
                     <span className="text-sm text-muted-foreground">
-                      Se detectó un nuevo inicio de sesión desde Madrid, España
+                      {t("sessions.new_login_detected")}
                     </span>
                   </DropdownMenuItem>
                 ))}
@@ -169,21 +202,21 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+              <DropdownMenuLabel>{t("profile.your_profile")}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/profile" className="cursor-pointer">
-                  Perfil
+                  {t("nav.profile")}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/settings" className="cursor-pointer">
-                  Configuración
+                  {t("nav.settings")}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer">
-                Cerrar Sesión
+                {t("common.logout")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -212,7 +245,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                         : "text-muted-foreground group-hover:text-foreground"
                     )}
                   />
-                  {item.title}
+                  {t(item.title)}
                   {item.badge && (
                     <Badge
                       variant="outline"
@@ -235,7 +268,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
               >
                 <LogOut className="h-4 w-4" />
-                Cerrar Sesión
+                {t("common.logout")}
               </Button>
             </div>
           </div>
@@ -253,6 +286,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 export default DashboardLayout;
 
 function MobileNav({ pathname, setOpen }: MobileNavProps) {
+  const { t } = useLanguage();
   return (
     <div className="flex flex-col gap-y-2 justify-between h-full">
       <div className="flex flex-col gap-y-4 h-full">
@@ -288,7 +322,7 @@ function MobileNav({ pathname, setOpen }: MobileNavProps) {
                       : "text-muted-foreground"
                   )}
                 />
-                {item.title}
+                {t(item.title)}
                 {item.badge && (
                   <Badge
                     variant="outline"
@@ -315,7 +349,7 @@ function MobileNav({ pathname, setOpen }: MobileNavProps) {
           className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
         >
           <LogOut className="h-4 w-4" />
-          Cerrar Sesión
+          {t("common.logout")}
         </Button>
       </div>
     </div>

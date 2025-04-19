@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 const sessions = [
   {
@@ -55,21 +56,23 @@ const sessions = [
 ];
 
 const SessionsPage = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Sesiones</h1>
-        <p className="text-muted-foreground">
-          Gestiona tus sesiones activas en diferentes dispositivos
-        </p>
+        <h1 className="text-3xl font-bold tracking-tight">
+          {t("sessions.title")}
+        </h1>
+        <p className="text-muted-foreground">{t("sessions.manage_sessions")}</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Sesiones Activas</CardTitle>
-          <CardDescription>
-            Dispositivos donde has iniciado sesión actualmente
-          </CardDescription>
+          <CardTitle className="text-xl">
+            {t("sessions.active_sessions")}
+          </CardTitle>
+          <CardDescription>{t("sessions.devices_logged_in")}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
@@ -85,7 +88,7 @@ const SessionsPage = () => {
                         <h3 className="font-medium">{session.device}</h3>
                         {session.isCurrentDevice && (
                           <Badge variant="outline" className="text-xs">
-                            Este dispositivo
+                            {t("sessions.this_device")}
                           </Badge>
                         )}
                       </div>
@@ -101,7 +104,7 @@ const SessionsPage = () => {
                     disabled={session.isCurrentDevice}
                   >
                     <LogOut className="h-4 w-4 mr-2" />
-                    Cerrar Sesión
+                    {t("sessions.logout")}
                   </Button>
                 </div>
                 <div className="ml-10 grid gap-1 text-sm">
@@ -120,27 +123,27 @@ const SessionsPage = () => {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline">Actualizar</Button>
-          <Button variant="destructive">Cerrar Todas las Sesiones</Button>
+          <Button variant="outline">{t("sessions.refresh")}</Button>
+          <Button variant="destructive">{t("sessions.logout_all")}</Button>
         </CardFooter>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Historial de Inicios de Sesión</CardTitle>
-          <CardDescription>
-            Últimos inicios de sesión en tu cuenta
-          </CardDescription>
+          <CardTitle className="text-xl">
+            {t("sessions.login_history")}
+          </CardTitle>
+          <CardDescription>{t("sessions.recent_logins")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Fecha y Hora</TableHead>
-                <TableHead>Dispositivo</TableHead>
-                <TableHead>Ubicación</TableHead>
-                <TableHead>Dirección IP</TableHead>
-                <TableHead>Estado</TableHead>
+                <TableHead>{t("sessions.date_time")}</TableHead>
+                <TableHead>{t("sessions.device")}</TableHead>
+                <TableHead>{t("sessions.location")}</TableHead>
+                <TableHead>{t("sessions.ip_address")}</TableHead>
+                <TableHead>{t("sessions.status")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -154,7 +157,7 @@ const SessionsPage = () => {
                     variant="outline"
                     className="bg-green-50 text-green-700 border-green-200"
                   >
-                    Exitoso
+                    {t("sessions.successful")}
                   </Badge>
                 </TableCell>
               </TableRow>
@@ -168,7 +171,7 @@ const SessionsPage = () => {
                     variant="outline"
                     className="bg-green-50 text-green-700 border-green-200"
                   >
-                    Exitoso
+                    {t("sessions.successful")}
                   </Badge>
                 </TableCell>
               </TableRow>
@@ -182,7 +185,7 @@ const SessionsPage = () => {
                     variant="outline"
                     className="bg-red-50 text-red-700 border-red-200"
                   >
-                    Bloqueado
+                    {t("sessions.blocked")}
                   </Badge>
                 </TableCell>
               </TableRow>
@@ -196,7 +199,7 @@ const SessionsPage = () => {
                     variant="outline"
                     className="bg-green-50 text-green-700 border-green-200"
                   >
-                    Exitoso
+                    {t("sessions.successful")}
                   </Badge>
                 </TableCell>
               </TableRow>
@@ -205,7 +208,7 @@ const SessionsPage = () => {
         </CardContent>
         <CardFooter>
           <Button variant="outline" className="w-full">
-            Ver Historial Completo
+            {t("sessions.view_full_history")}
           </Button>
         </CardFooter>
       </Card>
