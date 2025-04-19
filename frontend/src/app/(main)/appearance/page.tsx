@@ -14,7 +14,16 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, Grid3X3, Layout, Monitor, Moon, Sun } from "lucide-react";
+import {
+  Check,
+  Focus,
+  Globe,
+  Grid3X3,
+  Layout,
+  Monitor,
+  Moon,
+  Sun,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
@@ -27,6 +36,8 @@ import {
 } from "@/components/ui/select";
 import { useTheme } from "@/providers/ThemeProvider";
 import { useLanguage } from "@/providers/LanguageProvider";
+import { toast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 const ACCENT_COLORS = [
   { name: "Emerald", value: "emerald", class: "bg-emerald-500" },
@@ -37,14 +48,29 @@ const ACCENT_COLORS = [
 ];
 
 const AppearancePage = () => {
-  const { theme, setTheme, accentColor, setAccentColor } = useTheme();
+  const {
+    theme,
+    setTheme,
+    accentColor,
+    setAccentColor,
+    layout,
+    setLayout,
+    sidebarPosition,
+    setSidebarPosition,
+    contentWidth,
+    setContentWidth,
+    fontScale,
+    setFontScale,
+    reducedMotion,
+    setReducedMotion,
+    highContrast,
+    setHighContrast,
+    focusMode,
+    setFocusMode,
+    resetPreferences,
+  } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [layout, setLayout] = useState("default");
-  const [fontScale, setFontScale] = useState(100);
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const [highContrast, setHighContrast] = useState(false);
-  const [sidebarPosition, setSidebarPosition] = useState("left");
-  const { t } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
 
   useEffect(() => {
     setMounted(true);
@@ -56,29 +82,18 @@ const AppearancePage = () => {
     }
   }, [fontScale, mounted]);
 
-  useEffect(() => {
-    if (mounted) {
-      if (reducedMotion) {
-        document.documentElement.classList.add("reduce-motion");
-      } else {
-        document.documentElement.classList.remove("reduce-motion");
-      }
-    }
-  }, [reducedMotion, mounted]);
-
-  useEffect(() => {
-    if (mounted) {
-      if (highContrast) {
-        document.documentElement.classList.add("high-contrast");
-      } else {
-        document.documentElement.classList.remove("high-contrast");
-      }
-    }
-  }, [highContrast, mounted]);
-
   if (!mounted) {
     return null;
   }
+
+  const handleResetAll = () => {
+    resetPreferences();
+    toast({
+      title: t("appearance.preferences_reset"),
+      description: t("appearance.preferences_reset_description"),
+      action: <ToastAction altText="Undo">{t("common.undo")}</ToastAction>,
+    });
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -90,13 +105,15 @@ const AppearancePage = () => {
       </div>
 
       <Tabs defaultValue="theme">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="theme">{t("appearance.theme")}</TabsTrigger>
           <TabsTrigger value="layout">{t("appearance.layout")}</TabsTrigger>
           <TabsTrigger value="accessibility">
             {t("appearance.accessibility")}
           </TabsTrigger>
+          <TabsTrigger value="language">{t("appearance.language")}</TabsTrigger>
         </TabsList>
+
         <TabsContent value="theme" className="space-y-4 pt-4">
           <Card className="glass-card">
             <CardHeader>
@@ -179,12 +196,12 @@ const AppearancePage = () => {
                   <button
                     key={color.value}
                     className={cn(
-                      "relative flex h-10 w-full items-center justify-center rounded-md transition-all",
+                      "relative flex h-10 w-full items-center justify-center rounded-md transition-all hover:scale-105",
                       color.class,
                       accentColor === color.value &&
                         "ring-2 ring-offset-2 ring-offset-background"
                     )}
-                    onClick={() => setAccentColor(color.value)}
+                    onClick={() => setAccentColor(color.value as any)}
                     title={color.name}
                   >
                     {accentColor === color.value && (
@@ -210,11 +227,17 @@ const AppearancePage = () => {
             <CardFooter>
               <div className="space-y-2 w-full">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="preview-button">{t("appearance.preview")}</Label>
-                  <Button id="preview-button">{t("appearance.button_example")}</Button>
+                  <Label htmlFor="preview-button">
+                    {t("appearance.preview")}
+                  </Label>
+                  <Button id="preview-button">
+                    {t("appearance.button_example")}
+                  </Button>
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="preview-progress">{t("appearance.progress_bar")}</Label>
+                  <Label htmlFor="preview-progress">
+                    {t("appearance.progress_bar")}
+                  </Label>
                   <div className="w-1/2">
                     <Slider
                       id="preview-progress"
@@ -227,23 +250,60 @@ const AppearancePage = () => {
               </div>
             </CardFooter>
           </Card>
+          <Card className="glass-card">
+            <CardHeader>
+              <CardTitle>{t("appearance.focus_mode")}</CardTitle>
+              <CardDescription>
+                {t("appearance.focus_mode_description")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="focus-mode">
+                    {t("appearance.enable_focus_mode")}
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    {t("appearance.focus_mode_help")}
+                  </p>
+                </div>
+                <Switch
+                  id="focus-mode"
+                  checked={focusMode}
+                  onCheckedChange={setFocusMode}
+                />
+              </div>
+            </CardContent>
+            <CardFooter>
+              <div className="flex items-center text-sm text-muted-foreground">
+                <Focus className="mr-2 h-4 w-4" />
+                <span>{t("appearance.focus_mode_tip")}</span>
+              </div>
+            </CardFooter>
+          </Card>
         </TabsContent>
 
         <TabsContent value="layout" className="space-y-4 pt-4">
           <Card className="glass-card">
             <CardHeader>
-              <CardTitle className="text-xl">{t("appearance.layout")}</CardTitle>
-              <CardDescription>{t("appearance.customize_layout")}</CardDescription>
+              <CardTitle className="text-xl">
+                {t("appearance.layout")}
+              </CardTitle>
+              <CardDescription>
+                {t("appearance.customize_layout")}
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <RadioGroup
                 value={layout}
-                onValueChange={setLayout}
+                onValueChange={(value) =>
+                  setLayout(value as "default" | "compact")
+                }
                 className="grid grid-cols-2 gap-4"
               >
                 <div>
                   <RadioGroupItem
-                    value="default"
+                    value={"default"}
                     id="layout-default"
                     className="sr-only"
                   />
@@ -277,21 +337,32 @@ const AppearancePage = () => {
                 </Label>
                 <Select
                   value={sidebarPosition}
-                  onValueChange={setSidebarPosition}
+                  onValueChange={(value) =>
+                    setSidebarPosition(value as "left" | "right")
+                  }
                 >
                   <SelectTrigger id="sidebar-position">
                     <SelectValue placeholder="Selecciona una posición" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="left">{t("appearance.left")}</SelectItem>
-                    <SelectItem value="right">{t("appearance.right")}</SelectItem>
+                    <SelectItem value="right">
+                      {t("appearance.right")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <Separator />
               <div className="space-y-2">
-                <Label htmlFor="content-width">{t("appearance.content_width")}</Label>
-                <Select defaultValue="container">
+                <Label htmlFor="content-width">
+                  {t("appearance.content_width")}
+                </Label>
+                <Select
+                  value={contentWidth}
+                  onValueChange={(value) =>
+                    setContentWidth(value as "container" | "full" | "narrow")
+                  }
+                >
                   <SelectTrigger id="content-width">
                     <SelectValue placeholder={t("appearance.select_width")} />
                   </SelectTrigger>
@@ -299,14 +370,30 @@ const AppearancePage = () => {
                     <SelectItem value="container">
                       {t("appearance.container")}
                     </SelectItem>
-                    <SelectItem value="full">{t("appearance.full_width")}</SelectItem>
-                    <SelectItem value="narrow">{t("appearance.narrow")}</SelectItem>
+                    <SelectItem value="full">
+                      {t("appearance.full_width")}
+                    </SelectItem>
+                    <SelectItem value="narrow">
+                      {t("appearance.narrow")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </CardContent>
             <CardFooter>
-              <Button variant="outline" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                  setLayout("default");
+                  setSidebarPosition("left");
+                  setContentWidth("container");
+                  toast({
+                    title: t("appearance.layout_reset"),
+                    description: t("appearance.layout_reset_description"),
+                  });
+                }}
+              >
                 {t("appearance.apply_layout")}
               </Button>
             </CardFooter>
@@ -316,8 +403,12 @@ const AppearancePage = () => {
         <TabsContent value="accessibility" className="space-y-4 pt-4">
           <Card className="glass-card">
             <CardHeader>
-              <CardTitle className="text-xl">{t("appearance.accessibility")}</CardTitle>
-              <CardDescription>{t("appearance.adjust_settings")}</CardDescription>
+              <CardTitle className="text-xl">
+                {t("appearance.accessibility")}
+              </CardTitle>
+              <CardDescription>
+                {t("appearance.adjust_settings")}
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
@@ -341,7 +432,9 @@ const AppearancePage = () => {
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label htmlFor="high-contrast">{t("appearance.high_contrast")}</Label>
+                  <Label htmlFor="high-contrast">
+                    {t("appearance.high_contrast")}
+                  </Label>
                   <p className="text-sm text-muted-foreground">
                     {t("appearance.increase_contrast")}
                   </p>
@@ -355,7 +448,9 @@ const AppearancePage = () => {
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label htmlFor="reduced-motion">{t("appearance.reduced_motion")}</Label>
+                  <Label htmlFor="reduced-motion">
+                    {t("appearance.reduced_motion")}
+                  </Label>
                   <p className="text-sm text-muted-foreground">
                     {t("appearance.reduce_animations")}
                   </p>
@@ -375,6 +470,10 @@ const AppearancePage = () => {
                   setFontScale(100);
                   setReducedMotion(false);
                   setHighContrast(false);
+                  toast({
+                    title: t("appearance.accessibility_reset"),
+                    description: t("appearance.accessibility_reset_description"),
+                  });
                 }}
               >
                 {t("appearance.reset_accessibility")}
@@ -382,7 +481,74 @@ const AppearancePage = () => {
             </CardFooter>
           </Card>
         </TabsContent>
+
+        <TabsContent value="language" className="space-y-4 pt-4">
+          <Card className="glass-card">
+            <CardHeader>
+              <CardTitle>{t("appearance.language")}</CardTitle>
+              <CardDescription>
+                {t("appearance.select_language")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <RadioGroup
+                value={language}
+                onValueChange={(value) => setLanguage(value as "en" | "es")}
+                className="grid grid-cols-2 gap-4"
+              >
+                <div>
+                  <RadioGroupItem value="en" id="lang-en" className="sr-only" />
+                  <Label
+                    htmlFor="lang-en"
+                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-background p-4 hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary"
+                  >
+                    <Globe className="mb-3 h-6 w-6" />
+                    {t("appearance.language_english")}
+                  </Label>
+                </div>
+                <div>
+                  <RadioGroupItem value="es" id="lang-es" className="sr-only" />
+                  <Label
+                    htmlFor="lang-es"
+                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-background p-4 hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary"
+                  >
+                    <Globe className="mb-3 h-6 w-6" />
+                    {t("appearance.language_spanish")}
+                  </Label>
+                </div>
+              </RadioGroup>
+            </CardContent>
+            <CardFooter>
+              <p className="text-sm text-muted-foreground">
+                {t("appearance.language_note")}
+              </p>
+            </CardFooter>
+          </Card>
+        </TabsContent>
       </Tabs>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl">
+            {t("appearance.all_preferences")}
+          </CardTitle>
+          <CardDescription>
+            {t("appearance.reset_all_preferences")}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            {t("appearance.reset_warning")}
+          </p>
+          <Button
+            variant="destructive"
+            onClick={handleResetAll}
+            className="w-full"
+          >
+            {t("appearance.reset_all")}
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 };
