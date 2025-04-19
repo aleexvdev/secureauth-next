@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, EyeIcon, Loader, Lock, Mail } from "lucide-react";
+import { ArrowRight, EyeIcon, EyeOffIcon, Loader, Lock, Mail } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
@@ -158,7 +158,11 @@ export default function SignIn() {
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground"
                           onClick={() => setShowPassword(!showPassword)}
                         >
-                          <EyeIcon className="h-5 w-5" />
+                          {showPassword ? (
+                            <EyeOffIcon className="h-5 w-5" />
+                          ) : (
+                            <EyeIcon className="h-5 w-5" />
+                          )}
                         </button>
                       </div>
                     </FormControl>

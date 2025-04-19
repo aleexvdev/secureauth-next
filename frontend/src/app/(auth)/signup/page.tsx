@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
   EyeIcon,
+  EyeOffIcon,
   Loader,
   Lock,
   Mail,
@@ -217,7 +218,13 @@ export default function SignUp() {
                               showPassword: !prevState.showPassword,
                             }))}
                           >
-                            <EyeIcon className="h-5 w-5" />
+                            {
+                              passwordState.showPassword ? (
+                                <EyeOffIcon className="h-5 w-5" />
+                              ) : (
+                                <EyeIcon className="h-5 w-5" />
+                              )
+                            }
                           </button>
                         </div>
                       </FormControl>
@@ -259,7 +266,13 @@ export default function SignUp() {
                               showConfirmPassword: !prevState.showConfirmPassword,
                             }))}
                           >
-                            <EyeIcon className="h-5 w-5" />
+                          {
+                            passwordState.showConfirmPassword ? (
+                              <EyeOffIcon className="h-5 w-5" />
+                            ) : (
+                              <EyeIcon className="h-5 w-5" />
+                            )
+                          }
                           </button>
                         </div>
                       </FormControl>
