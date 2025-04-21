@@ -1,12 +1,14 @@
 import { logger } from "@/common/utils/logger";
 import { config } from "@/config/app.config";
 import { Pool } from "pg";
+import fs from "fs";
+import path from "path";
 
 const pool = new Pool({
   user: config.DATABASE.USER,
   host: config.DATABASE.HOST,
   database: config.DATABASE.NAME,
-  password: config.DATABASE.PASSWORD,
+  password: config.DATABASE.PASSWORD.toString(),
   port: Number.parseInt(config.DATABASE.PORT),
   ssl: config.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
   max: 20,
@@ -22,6 +24,28 @@ export const setupDatabase = async (): Promise<void> => {
   } catch (error) {
     logger.error("Error connecting to the database:", error);
     throw error;
+  }
+}
+
+export const createDatabase = async (): Promise<void> => {
+  const migrationDir = path.join(__dirname, "migrations");
+  const files = fs.readdirSync(migrationDir);  
+  for (const file of files) {
+    const filePath = path.join(migrationDir, file);
+    const sql = fs.readFileSync(filePath, "utf8");
+    await query(sql);
+    logger.info(`Migration ${file} executed successfully`);
+  }
+}
+
+export const seed = async (): Promise<void> => {
+  const seedDir = path.join(__dirname, "seeds");
+  const files = fs.readdirSync(seedDir);  
+  for (const file of files) {
+    const filePath = path.join(seedDir, file);
+    const sql = fs.readFileSync(filePath, "utf8");
+    await query(sql);
+    logger.info(`Seed ${file} executed successfully`);
   }
 }
 
@@ -51,6 +75,18 @@ export const transaction = async <T>(callback: (client: any) => Promise<T>): Pro
     throw error;
   } finally {
     client.release();
+  }
+}
+
+export const revertMigrations = async (): Promise<void> => {
+  const filePath = path.join(__dirname, "rollback", "revert-migrations.sql");
+  const sql = fs.readFileSync(filePath, "utf8");
+  try {
+    await query(sql);
+    logger.info("All migrations reverted successfully");
+  } catch (error) {
+    logger.error("Error reverting migrations:", error);
+    throw error;
   }
 }
 

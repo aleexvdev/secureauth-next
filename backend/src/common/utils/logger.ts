@@ -1,4 +1,4 @@
-import winston, { debug, warn } from "winston";
+import winston from "winston";
 
 const levels = {
   error: 0,
@@ -41,3 +41,19 @@ export const logger = winston.createLogger({
   format,
   transports,
 });
+/* const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.Console({
+      format: winston.format.simple(),
+    }),
+    new winston.transports.File({ filename: "error.log", level: "error" }),
+    new winston.transports.File({ filename: "combined.log" }),
+  ],
+});
+
+export { logger }; */

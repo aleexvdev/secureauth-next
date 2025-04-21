@@ -8,11 +8,12 @@
   "scripts": {
     "start": "node dist/server.js",
     "build": "tsc",
-    "dev": "ts-node --files src/server.ts",
+    "dev": "ts-node -r tsconfig-paths/register --files src/server.ts",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "migrate": "ts-node --files src/config/migration-runner.config.ts",
-    "seed": "ts-node --files src/config/seed-runner.config.ts",
+    "migrate": "ts-node -r tsconfig-paths/register --files src/config/migration-runner.config.ts",
+    "seed": "ts-node -r tsconfig-paths/register --files src/config/seed-runner.config.ts",
+    "revert": "ts-node -r tsconfig-paths/register --files src/config/revert-migrations.config.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -rf dist"
   },
@@ -63,9 +64,10 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/qrcode": "^1.5.5",
     "@types/speakeasy": "^2.0.10",
-    "ts-node": "^10.9.2",
     "jest": "^29.7.0",
-    "typescript": "^5.8.3",
-    "tsx": "^4.19.3"
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
   }
 }

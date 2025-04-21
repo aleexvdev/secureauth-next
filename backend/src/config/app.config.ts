@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { getEnv } from "@/common/utils/get-env";
 
 const appConfig = () => ({
@@ -11,7 +12,7 @@ const appConfig = () => ({
     HOST: getEnv("DB_HOST", "localhost"),
     PORT: getEnv("DB_PORT", "5432"),
     USER: getEnv("DB_USER", "postgres"),
-    PASSWORD: getEnv("DB_PASSWORD"),
+    PASSWORD: getEnv("DB_PASSWORD").toString(),
     NAME: getEnv("DB_NAME"),
   },
   JWT: {
