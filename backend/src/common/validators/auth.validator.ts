@@ -5,7 +5,6 @@ export const passwordSchema = z.string().min(6).max(20).trim();
 export const verificationCodeSchema = z.string().min(1).max(255).trim();
 
 export const registerSchema = z.object({
-  name: z.string().min(3).max(255).trim(),
   username: z.string().min(3).max(20).trim(),
   email: emailSchema,
   password: passwordSchema,

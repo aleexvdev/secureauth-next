@@ -1,12 +1,22 @@
-import UserModel from "../../database/models/user.model";
+import { CreateUserDto, UpdateUserDto } from "@/common/interface/user.interface";
+import User from "@/database/models/user.model";
 
 export class UserService {
-  public async findUserById(userId: string) {
-    const user = await UserModel.findById(
-      userId,
-      { password: false }
-    );
+  async getUserById(id: string) {
+    return User.findByPk(id, {
+      attributes: ["id", "name", "email", "username"],
+      include: ['role'],
+    });
+  }
 
-    return user || null;
+  async getUserByEmail(email: string) {
+    return User.findOne({
+      where: {
+        email,
+      },
+      attributes: ["id", "name", "email", "username"],
+      include: ['role'],
+    });
   }
 }
+export default new UserService();

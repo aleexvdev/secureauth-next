@@ -1,6 +1,6 @@
 import { CookieOptions, Response } from "express";
-import { config } from "../../config/app.config";
 import { calculateExpirationDate } from "./date-time";
+import { config } from "@/config/app.config";
 
 type CookiePayloadType = {
   res: Response;
@@ -8,7 +8,7 @@ type CookiePayloadType = {
   refreshToken: string;
 };
 
-export const REFRESH_PATH = `${config.BASE_PATH}/auth/refresh`;
+export const REFRESH_PATH = `${config.CORS.BASE_PATH}/auth/refresh`;
 
 const defaultCookieOptions: CookieOptions = {
   httpOnly: true,

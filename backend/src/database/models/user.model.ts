@@ -1,68 +1,57 @@
-import mongoose, { Document, Schema } from "mongoose";
-import { compareValue, hashValue } from "../../common/utils/bcrypt";
+import { DataTypes, Model } from "sequelize";
+import sequelize from '../database';
+import { compareValue, hashValue } from "@/common/utils/bcrypt";
 
-interface UserPreferences {
-  enable2FA: boolean;
-  emailNotification: boolean;
-  twoFactorSecret?: string;
+class User extends Model {
+  public id!: number;
+  public username!: string;
+  public email!: string;
+  public password!: string;
+  public comparePassword!: (value: string) => Promise<boolean>;
 }
 
-export interface UserDocument extends Document {
-  name: string;
-  username: string;
-  email: string;
-  password: string;
-  isEmailVerified: boolean;
-  userPreferences: UserPreferences;
-  comparePassword(value: string): Promise<boolean>;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const userPreferencesSchema = new Schema<UserPreferences>({
-  enable2FA: { type: Boolean, default: false },
-  emailNotification: { type: Boolean, default: true },
-  twoFactorSecret: { type: String, required: false },
-});
-
-const userSchema = new Schema<UserDocument>({
-  name: { type: String, required: true },
-  username: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  isEmailVerified: { type: Boolean, default: false },
-  userPreferences: { type: userPreferencesSchema, default: {} },
-  isActive: { type: Boolean, default: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
+User.init({
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: true,
+    },
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 }, {
+  sequelize,
+  modelName: 'User',
+  tableName: 'users',
   timestamps: true,
-  toJSON: {},
 });
 
-userSchema.pre("save", async function (next) {
-  const user = this;
-  if (!user.isModified("password")) {
-    return next();
-  }
+User.beforeCreate(async (user: User) => {
   user.password = await hashValue(user.password);
-  next();
 });
 
-userSchema.methods.comparePassword = async function (value: string): Promise<boolean> {
+User.beforeUpdate(async (user: User) => {
+  if (user.changed("password")) {
+    user.password = await hashValue(user.password);
+  }
+});
+
+User.prototype.comparePassword = async function (value: string): Promise<boolean> {
   return await compareValue(value, this.password);
 };
 
-userSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
-    delete returnedObject.password;
-    if (returnedObject.UserPreferences && returnedObject.UserPreferences.twoFactorSecret) {
-      delete returnedObject.UserPreferences.twoFactorSecret;
-    }
-    return returnedObject;
-  },
-});
-
-const UserModel = mongoose.model<UserDocument>("User", userSchema);
-export default UserModel;
+export default User;
