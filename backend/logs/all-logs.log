@@ -1,5 +1,0 @@
-2025-04-20 19:36:12:3612 [31merror[39m: [31mError connecting to the database: no existe la base de datos �secure_auth�[39m
-2025-04-20 19:38:40:3840 [32minfo[39m: [32mDataba connection established successfully[39m
-2025-04-20 19:38:40:3840 [32minfo[39m: [32mServer is running on port 8000[39m
-2025-04-20 19:38:40:3840 [32minfo[39m: [32mBase path is /api/v1[39m
-2025-04-20 23:59:23:5923 [32minfo[39m: [32mAll migrations reverted successfully[39m

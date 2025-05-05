@@ -1,25 +1,64 @@
-// import mongoose, { Document, Schema } from "mongoose";
-// import { thirtyDaysFromNow } from "../../common/utils/date-time";
+import { DataTypes, Model } from "sequelize";
+import sequelize from '../database';
+import { thirtyDaysFromNow } from "@/common/utils/date-time";
+import User from "./user.model";
 
-// export interface SessionDocument extends Document {
-//   _id: mongoose.Types.ObjectId;
-//   userId: mongoose.Types.ObjectId;
-//   userAgent?: string;
-//   expiredAt: Date;
-//   createdAt: Date;
-//   updatedAt: Date;
-// }
+export interface SessionAttributes {
+  id: number;
+  userId: number;
+  userAgent?: string;
+  expiredAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-// const sessionSchema = new Schema<SessionDocument>({
-//   userId: { type: Schema.Types.ObjectId, required: true, index: true, ref: "User" },
-//   userAgent: { type: String, required: false },
-//   expiredAt: { type: Date, required: true, default: thirtyDaysFromNow },
-//   createdAt: { type: Date, default: Date.now },
-//   updatedAt: { type: Date, default: Date.now },
-// }, {
-//   timestamps: true,
-//   toJSON: { getters: true, virtuals: true },
-// });
+class SessionModel extends Model {
+  public id!: number;
+  public userId!: number;
+  public userAgent?: string;
+  public expiredAt!: Date;
+  public createdAt!: Date;
+  public updatedAt!: Date;
+}
 
-// const SessionModel = mongoose.model<SessionDocument>("Session", sessionSchema);
-// export default SessionModel;
+SessionModel.init({
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: User,
+      key: "id",
+    }
+  },
+  userAgent: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  expiredAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: thirtyDaysFromNow,
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: Date.now,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: Date.now,
+  },
+}, {
+  sequelize,
+  modelName: 'Session',
+  tableName: 'sessions',
+  timestamps: true,
+});
+
+export default SessionModel;

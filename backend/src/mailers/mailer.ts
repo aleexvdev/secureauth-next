@@ -9,8 +9,9 @@ type Params = {
   from?: string;
 }
 
-const mailerSender = config.NODE_ENV === "development" ?
-  "no-reply <onboarding@resend.dev>" : `no-reply <${config.EMAIL.MAILER_SENDER}>`;
+const mailerSender = config.NODE_ENV === "development"
+  ? "no-reply <onboarding@resend.dev>"
+  : `no-reply <${config.EMAIL.MAILER_SENDER}>`;
 
 export const sendEmail = async ({
   to,

@@ -1,15 +1,15 @@
 import jwt, { SignOptions, VerifyOptions } from "jsonwebtoken";
-import { SessionDocument } from "../../database/models/session.model";
-import { UserDocument } from "../../database/models/user.model";
 import { config } from "../../config/app.config";
+import User from "@/database/models/user.model";
+import Session from "@/database/models/session.model";
 
 export type AccessTokenPayload = {
-  userId: UserDocument["_id"];
-  sessionId: SessionDocument["_id"];
+  userId: User["id"];
+  sessionId: Session["id"];
 };
 
 export type RefreshTokenPayload = {
-  sessionId: SessionDocument["_id"];
+  sessionId: Session["id"];
 };
 
 type SignOptionsAndSecret = SignOptions & {

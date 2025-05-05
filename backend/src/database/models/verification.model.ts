@@ -1,32 +1,62 @@
-import mongoose, { Document } from "mongoose";
-import { VerificationEnumm } from "../../common/enums/verification-code.enum";
-import { generateUUID } from "../../common/utils/uuid";
+import { DataTypes, Model } from "sequelize";
+import sequelize from '../database';
+import { generateUUID } from "@/common/utils/uuid";
+import User from "./user.model";
 
-export interface VerificationCodeDocument extends Document {
-  userId: mongoose.Types.ObjectId;
-  code: string;
-  type: VerificationEnumm;
-  expiredAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
+class VerificationCode extends Model {
+  public id!: number;
+  public userId!: number;
+  public code!: string;
+  public type!: string;
+  public expiredAt!: Date;
+  public createdAt!: Date;
+  public updatedAt!: Date;
 }
 
-const verificationCodeSchema = new mongoose.Schema<VerificationCodeDocument>({
-  userId: { type: mongoose.Schema.Types.ObjectId, required: true, index: true, ref: "User" },
-  code: { type: String, required: true, unique: true, default: generateUUID },
-  type: { type: String, required: true },
-  expiredAt: { type: Date, required: true, default: Date.now },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
+VerificationCode.init({
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: User,
+      key: "id",
+    }
+  },
+  code: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    defaultValue: generateUUID,
+  },
+  type: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  expiredAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: Date.now,
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: Date.now,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: Date.now,
+  },
 }, {
+  sequelize,
+  modelName: 'VerificationCode',
+  tableName: 'verification_codes',
   timestamps: true,
-  toJSON: { getters: true, virtuals: true },
 });
 
-const VerificationCodeModel = mongoose.model<VerificationCodeDocument>(
-  "VerificationCode", 
-  verificationCodeSchema,
-  "verification_codes"
-);
-
-export default VerificationCodeModel;
+export default VerificationCode;

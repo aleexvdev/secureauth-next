@@ -11,7 +11,7 @@ export class UserController {
 
   getUserById = asyncHandler(async (req: Request, res: Response): Promise<any> => {
     const { id } = req.params;
-    const user = await this.userService.getUserById(id);
+    const user = await this.userService.findUserById(id);
     return res.status(HTTPSTATUS.OK).json({
       message: "User retrieved successfully",
       data: user,

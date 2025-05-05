@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+/* import { Request, Response } from "express";
 import { asyncHandler } from "../../middlewares/asyncHandler";
 import { MfaService } from "./mfa.service";
 import { HTTPSTATUS } from "../../config/http.config";
@@ -55,4 +55,4 @@ export class MfaController {
       user,
     });
   });
-}
+} */

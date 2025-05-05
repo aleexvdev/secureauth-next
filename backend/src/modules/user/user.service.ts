@@ -2,10 +2,9 @@ import { CreateUserDto, UpdateUserDto } from "@/common/interface/user.interface"
 import User from "@/database/models/user.model";
 
 export class UserService {
-  async getUserById(id: string) {
+  async findUserById(id: string) {
     return User.findByPk(id, {
-      attributes: ["id", "name", "email", "username"],
-      include: ['role'],
+      attributes: ["id","username", "email", "isEmailVerified"],
     });
   }
 
@@ -14,8 +13,7 @@ export class UserService {
       where: {
         email,
       },
-      attributes: ["id", "name", "email", "username"],
-      include: ['role'],
+      attributes: ["id", "username", "email", "isEmailVerified"],
     });
   }
 }

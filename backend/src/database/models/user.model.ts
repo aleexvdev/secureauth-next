@@ -1,16 +1,45 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from '../database';
 import { compareValue, hashValue } from "@/common/utils/bcrypt";
 
-class User extends Model {
+interface UserPreferences {
+  enable2FA: boolean;
+  emailNotification: boolean;
+  twoFactorSecret?: string;
+}
+
+export interface UserAttributes {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+  isEmailVerified?: boolean;
+  userPreferences: UserPreferences;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+interface UserCreationAttributes extends Optional<UserAttributes, "id" | "isEmailVerified" | "createdAt" | "updatedAt" | "userPreferences"> {};
+
+class UserModel extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: number;
   public username!: string;
   public email!: string;
   public password!: string;
-  public comparePassword!: (value: string) => Promise<boolean>;
+  public isEmailVerified!: boolean;
+  public userPreferences!: UserPreferences;
+  public comparePassword!: (value: string) => Promise<boolean>; 
+  toJSON() {
+    const values: any = { ...this.get() };
+    delete values.password
+    if (values.userPreferences) {
+      delete values.userPreferences.twoFactorSecret;
+    }
+    return values;
+  }
 }
 
-User.init({
+UserModel.init({
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -33,6 +62,17 @@ User.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
+  isEmailVerified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  userPreferences: {
+    type: DataTypes.JSONB, 
+    defaultValue: {
+      enable2FA: false,
+      emailNotification: true,
+    },
+  },
 }, {
   sequelize,
   modelName: 'User',
@@ -40,18 +80,18 @@ User.init({
   timestamps: true,
 });
 
-User.beforeCreate(async (user: User) => {
+UserModel.beforeCreate(async (user: UserModel) => {
   user.password = await hashValue(user.password);
 });
 
-User.beforeUpdate(async (user: User) => {
+UserModel.beforeUpdate(async (user: UserModel) => {
   if (user.changed("password")) {
     user.password = await hashValue(user.password);
   }
 });
 
-User.prototype.comparePassword = async function (value: string): Promise<boolean> {
+UserModel.prototype.comparePassword = async function (value: string): Promise<boolean> {
   return await compareValue(value, this.password);
 };
 
-export default User;
+export default UserModel;

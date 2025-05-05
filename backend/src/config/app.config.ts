@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { getEnv } from "@/common/utils/get-env";
 
 const appConfig = () => ({
@@ -16,10 +15,10 @@ const appConfig = () => ({
     NAME: getEnv("DB_NAME"),
   },
   JWT: {
-    SECRET: getEnv("JWT_SECRET", "secret"),
-    EXPIRES_IN: getEnv("JWT_EXPIRES_IN", "15min"),
-    REFRESH_SECRET: getEnv("JWT_REFRESH_SECRET", "jwt_refresh_secret_key"),
-    REFRESH_EXPIRES_IN: getEnv("JWT_REFRESH_EXPIRES_IN", "30d"),
+    SECRET: getEnv("JWT_SECRET"),
+    EXPIRES_IN: getEnv("JWT_EXPIRES_IN"),
+    REFRESH_SECRET: getEnv("JWT_REFRESH_SECRET"),
+    REFRESH_EXPIRES_IN: getEnv("JWT_REFRESH_EXPIRES_IN"),
   },
   APP_CONFIG: {
     NAME: getEnv("APP_NAME", "MyApp"),

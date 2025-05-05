@@ -1,9 +1,9 @@
 import { ExtractJwt, Strategy as JwtStategy, StrategyOptionsWithRequest } from "passport-jwt";
 import { UnauthorizedException } from "../utils/catch-error";
 import { ErrorCode } from "../enums/error-code.enum";
-import { config } from "../../config/app.config";
+import { config } from "@/config/app.config";
 import passport, { PassportStatic } from "passport";
-import { userService } from "../../modules/user/user.module";
+import userService from "@/modules/user/user.service";
 
 interface JwtPayload {
   userId: string;

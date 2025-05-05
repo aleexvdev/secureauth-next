@@ -1,4 +1,4 @@
-import { Router } from "express";
+/* import { Router } from "express";
 import { authenticateJwt } from "../../common/strategies/jwt.strategy";
 import { mfaController } from "./mfa.module";
 
@@ -9,4 +9,4 @@ mfaRoutes.post("/verify", authenticateJwt, mfaController.verifyMfaSetup);
 mfaRoutes.put("/revoke", authenticateJwt, mfaController.revokeMfaSetup);
 mfaRoutes.post("/verify-login", authenticateJwt, mfaController.verifyMfaForLogin);
 
-export default mfaRoutes;
+export default mfaRoutes; */

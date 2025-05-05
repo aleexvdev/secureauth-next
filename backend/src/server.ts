@@ -6,11 +6,11 @@ import cookieParser from "cookie-parser";
 import { config } from "./config/app.config";
 import { logger } from "./common/utils/logger";
 import sequelize from "./database/database";
-import passport from "passport";
 import { asyncHandler } from "./middlewares/asyncHandler";
 import { HTTPSTATUS } from "./config/http.config";
 import { errorHandler } from "./middlewares/errorHandler";
 import authRoutes from "./modules/auth/auth.routes";
+import passport from "./middlewares/passport";
 
 const app = express();
 const BASE_URL = config.CORS.CORS_ORIGIN;
@@ -22,13 +22,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Security middleware
-app.use(helmet());
 app.use(cors({
   origin: config.CORS.CORS_ORIGIN,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
+app.use(helmet());
 app.use(cookieParser());
 app.use(passport.initialize());
 app.get(

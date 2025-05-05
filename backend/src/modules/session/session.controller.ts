@@ -12,7 +12,7 @@ export class SessionController {
     this.sessionService = sessionService;
   }
 
-  public getAllSessions = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+  /* public getAllSessions = asyncHandler(async (req: Request, res: Response): Promise<any> => {
     const userId = req.user?.id;
     const sessionId = req.sessionId;
     const { sessions } = await this.sessionService.getAllSessions(userId);
@@ -41,15 +41,15 @@ export class SessionController {
       message: "Session retrieved successfully",
       user,
     });
-  });
+  }); */
 
-  public deleteSession = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+  /* public deleteSession = asyncHandler(async (req: Request, res: Response): Promise<any> => {
     const sessionId = z.string().parse(req.params.id);
     const userId = req.user?.id;
-    await this.sessionService.deleteSession(sessionId, userId);
+    await this.sessionService.deleteSession(Number(sessionId), Number(userId));
 
     return res.status(HTTPSTATUS.OK).json({
       message: "Session deleted successfully",
     });
-  });
+  }); */
 }

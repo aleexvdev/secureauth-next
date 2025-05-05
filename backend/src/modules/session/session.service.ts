@@ -2,7 +2,7 @@ import { NotFoundException } from "../../common/utils/catch-error";
 import SessionModel from "../../database/models/session.model";
 
 export class SessionService {
-  public async getAllSessions(userId: string) {
+  /* public async getAllSessions(userId: string) {
     const sessions = await SessionModel.find(
       {
         userId,
@@ -37,6 +37,19 @@ export class SessionService {
       userId,
     });
     if (!deletedSession) {
+      throw new NotFoundException("Session not found");
+    }
+    return;
+  } */
+
+  async deleteSession(sessionId: number, userId: number) {
+    const deletedSession = await SessionModel.destroy({
+      where: {
+        id: sessionId,
+        userId,
+      },
+    });
+    if (deletedSession === 0) {
       throw new NotFoundException("Session not found");
     }
     return;
