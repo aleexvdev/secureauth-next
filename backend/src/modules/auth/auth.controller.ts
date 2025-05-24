@@ -78,7 +78,6 @@ export class AuthController {
 
   logout = asyncHandler(async (req: Request, res: Response): Promise<any> => {
     const sessionId = req.sessionId;
-    console.log(sessionId, "Session ID");
     if (!sessionId) {
       throw new NotFoundException("Session is invalid.");
     }

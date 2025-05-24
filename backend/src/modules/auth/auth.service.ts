@@ -3,7 +3,7 @@ import { VerificationEnumm } from "@/common/enums/verification-code.enum";
 import { LoginDto, RegisterDto, ResetPasswordDto } from "@/common/interface/auth.interface";
 import { hashValue } from "@/common/utils/bcrypt";
 import { BadRequestException, InternalServerException, UnauthorizedException } from "@/common/utils/catch-error";
-import { anHourFromNow, calculateExpirationDate, fortyFiveMinutesFromNow, ON_DAY_IN_MS } from "@/common/utils/date-time";
+import { anHourFromNow, calculateExpirationDate, fortyFiveMinutesFromNow, ON_DAY_IN_MS, threeMinutesAgo } from "@/common/utils/date-time";
 import { RefreshTokenPayload, refreshTokenSignOptions, signJwtToken, verifyJwtToken } from "@/common/utils/jwt";
 import { logger } from "@/common/utils/logger";
 import { config } from "@/config/app.config";
@@ -145,14 +145,13 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException("User not found", ErrorCode.AUTH_USER_NOT_FOUND);
     }
-    const timeAgo = Date.now() - 1800000;
+    const timeAgo = threeMinutesAgo();
     const maxAttempts = 2;
     const count = await VerificationCode.count({
       where: {
         userId: user.id,
         type: VerificationEnumm.PASSWORD_RESET,
-        expiresAt: { $gt: timeAgo },
-        attempts: { $lt: maxAttempts },
+        expiredAt: { [Op.gt]: timeAgo },
       },
     });
     if (count >= maxAttempts) {
@@ -165,8 +164,7 @@ export class AuthService {
     const validCode = await VerificationCode.create({
       userId: user.id,
       type: VerificationEnumm.PASSWORD_RESET,
-      expiresAt,
-      attempts: 1,
+      expiredAt: expiresAt,
     });
     const resetPasswordUrl = `${config.CORS.CORS_ORIGIN}/reset-password?code=${validCode.code}&exp=${expiresAt.getTime()}`;
     const { data, error } = await sendEmail({
@@ -195,17 +193,14 @@ export class AuthService {
       throw new BadRequestException("Invalid or expired verification code");
     }
     const hashedPassowrd = await hashValue(password);
-    const updatedUser = await UserModel.findByPk(validCode.userId, {
-      attributes: ["id", "name", "email", "username"],
-      include: ['role'],
-    });
+    const updatedUser = await UserModel.update({ password: hashedPassowrd }, { where: { id: validCode.userId } });
     if (!updatedUser) {
       throw new BadRequestException("Unable to reset password");
     }
     await validCode.destroy();
     await SessionModel.destroy({
       where: {
-        userId: updatedUser.id,
+        userId: validCode.userId,
       },
     });
     return {
