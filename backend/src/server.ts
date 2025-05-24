@@ -9,8 +9,9 @@ import sequelize from "./database/database";
 import { asyncHandler } from "./middlewares/asyncHandler";
 import { HTTPSTATUS } from "./config/http.config";
 import { errorHandler } from "./middlewares/errorHandler";
-import authRoutes from "./modules/auth/auth.routes";
 import passport from "./middlewares/passport";
+import authRoutes from "./modules/auth/auth.routes";
+import userRoutes from "./modules/user/user.routes";
 
 const app = express();
 const BASE_URL = config.CORS.CORS_ORIGIN;
@@ -40,6 +41,7 @@ app.get(
   })
 );
 app.use(`${BASE_PATH}/auth`, authRoutes);
+app.use(`${BASE_PATH}/user`, userRoutes);
 app.use(errorHandler);
 
 const startServer = async () => {

@@ -5,7 +5,12 @@ export interface CreateUserDto {
 }
 
 export interface UpdateUserDto {
-  username?: string;
-  email?: string;
-  password?: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  province?: string;
+  postalCode?: string;
+  profileImage?: string;
 }

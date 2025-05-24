@@ -15,11 +15,19 @@ export interface UserAttributes {
   password: string;
   isEmailVerified?: boolean;
   userPreferences: UserPreferences;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  province?: string;
+  postalCode?: string;
+  profileImage?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, "id" | "isEmailVerified" | "createdAt" | "updatedAt" | "userPreferences"> {};
+interface UserCreationAttributes extends Optional<UserAttributes, "id" | "isEmailVerified" | "createdAt" | "updatedAt" | "userPreferences"> { };
 
 class UserModel extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: number;
@@ -28,7 +36,7 @@ class UserModel extends Model<UserAttributes, UserCreationAttributes> implements
   public password!: string;
   public isEmailVerified!: boolean;
   public userPreferences!: UserPreferences;
-  public comparePassword!: (value: string) => Promise<boolean>; 
+  public comparePassword!: (value: string) => Promise<boolean>;
   toJSON() {
     const values: any = { ...this.get() };
     delete values.password
@@ -67,11 +75,43 @@ UserModel.init({
     defaultValue: false,
   },
   userPreferences: {
-    type: DataTypes.JSONB, 
+    type: DataTypes.JSONB,
     defaultValue: {
       enable2FA: false,
       emailNotification: true,
     },
+  },
+  firstName: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  address: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  city: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  province: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  postalCode: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  profileImage: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
 }, {
   sequelize,
