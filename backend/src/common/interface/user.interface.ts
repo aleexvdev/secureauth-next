@@ -14,3 +14,7 @@ export interface UpdateUserDto {
   postalCode?: string;
   profileImage?: string;
 }
+
+export interface UpdatePasswordDto {
+  password: string;
+}

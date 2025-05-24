@@ -32,4 +32,16 @@ export class UserController {
     });
   });
 
+  updatePassword = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+    const { id } = req.params;
+    if (!id) {
+      throw new BadRequestException("User id is required", ErrorCode.BAD_REQUEST);
+    }
+    const updatedUser = await this.userService.updatePassword(Number(id), req.body);
+    return res.status(HTTPSTATUS.OK).json({
+      message: "Password updated successfully",
+      data: updatedUser,
+    });
+  });
+
 }

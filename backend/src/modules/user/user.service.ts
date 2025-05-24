@@ -1,5 +1,5 @@
 import { ErrorCode } from "@/common/enums/error-code.enum";
-import { CreateUserDto, UpdateUserDto } from "@/common/interface/user.interface";
+import { UpdatePasswordDto, UpdateUserDto } from "@/common/interface/user.interface";
 import { BadRequestException } from "@/common/utils/catch-error";
 import User from "@/database/models/user.model";
 
@@ -31,5 +31,13 @@ export class UserService {
     await user.update(payload);
     return user;
   }
+
+  async updatePassword(id: number, payload: UpdatePasswordDto) {
+    const user = await User.findByPk(id);
+    if(!user)  throw new BadRequestException("User not found", ErrorCode.USER_NOT_FOUND);
+    await user.update({ password: payload.password });
+    return user;
+  }
 }
+
 export default new UserService();
