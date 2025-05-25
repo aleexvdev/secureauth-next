@@ -6,6 +6,7 @@ import { BadRequestException, InternalServerException, UnauthorizedException } f
 import { anHourFromNow, calculateExpirationDate, fortyFiveMinutesFromNow, ON_DAY_IN_MS, threeMinutesAgo } from "@/common/utils/date-time";
 import { RefreshTokenPayload, refreshTokenSignOptions, signJwtToken, verifyJwtToken } from "@/common/utils/jwt";
 import { logger } from "@/common/utils/logger";
+import { parseUserAgent } from "@/common/utils/user-agent-parser";
 import { config } from "@/config/app.config";
 import SessionModel from "@/database/models/session.model";
 import UserModel from "@/database/models/user.model";
@@ -44,7 +45,7 @@ export class AuthService {
   }
 
   async login(payload: LoginDto) {
-    const { email, password, userAgent } = payload;
+    const { email, password, userAgent, ipAddress, location } = payload;
     const user = await UserModel.findOne({ where: { email } });
     if (!user) {
       logger.info("Invalid email or password provided for login");
@@ -55,11 +56,19 @@ export class AuthService {
       logger.info("Invalid email or password provided for login");
       throw new BadRequestException("Invalid email or password provided", ErrorCode.AUTH_USER_NOT_FOUND);
     }
+    const { browser, os, device } = parseUserAgent(String(userAgent));
 
-    const session = await SessionModel.create({
-      userId: user.id,
-      userAgent,
-    });
+    const session = await SessionModel.create(
+      {
+        userId: user.id,
+        userAgent,
+        ipAddress: String(ipAddress),
+        location: String(location),
+        device: String(device),
+        browser: String(browser),
+        os: String(os),
+      }
+    );
 
     const accessToken = signJwtToken({
       userId: user.id,

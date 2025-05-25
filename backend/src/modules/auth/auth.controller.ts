@@ -25,7 +25,7 @@ export class AuthController {
 
   login = asyncHandler(async (req: Request, res: Response): Promise<any> => {
     const userAgent = req.headers["user-agent"];
-    const body = loginSchema.parse({ ...req.body, userAgent });
+    const body = loginSchema.parse({ ...req.body, userAgent, ipAddress: req.ip, location: req.headers["x-forwarded-for"] });
     const { user, accessToken, refreshToken } = await this.authService.login(body);
     return setAuthenticationCookies({ res, accessToken, refreshToken }).status(HTTPSTATUS.OK).json({
       message: "User login successfully!",

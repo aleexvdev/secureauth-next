@@ -12,6 +12,7 @@ import { errorHandler } from "./middlewares/errorHandler";
 import passport from "./middlewares/passport";
 import authRoutes from "./modules/auth/auth.routes";
 import userRoutes from "./modules/user/user.routes";
+import sessionRoutes from "./modules/session/session.routes";
 
 const app = express();
 const BASE_URL = config.CORS.CORS_ORIGIN;
@@ -42,6 +43,7 @@ app.get(
 );
 app.use(`${BASE_PATH}/auth`, authRoutes);
 app.use(`${BASE_PATH}/user`, userRoutes);
+app.use(`${BASE_PATH}/session`, sessionRoutes);
 app.use(errorHandler);
 
 const startServer = async () => {

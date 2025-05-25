@@ -19,6 +19,8 @@ export const loginSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
   userAgent: z.string().optional(),
+  ipAddress: z.string().optional(),
+  location: z.string().optional(),
 });
 
 export const verificationEmailSchema = z.object({

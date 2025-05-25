@@ -6,6 +6,6 @@ const userRoutes = Router();
 
 userRoutes.get("/:id", authenticateJwt, userController.getUserById);
 userRoutes.put("/:id", authenticateJwt, userController.updateUser);
-userRoutes.put("/:id/password", userController.updatePassword);
+userRoutes.put("/:id/password", authenticateJwt, userController.updatePassword);
 
 export default userRoutes;
