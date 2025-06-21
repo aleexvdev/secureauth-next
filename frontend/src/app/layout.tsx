@@ -17,9 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Security Dashboard",
+  title: "SecureAuth",
   description: "Manage your account security and sessions",
-}
+};
 
 export default function RootLayout({
   children,
@@ -32,14 +32,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <QueryProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <LanguageProvider>{children}</LanguageProvider>
-            <Toaster />
+          <ThemeProvider>
+            <LanguageProvider>
+              <Toaster />
+              {children}
+            </LanguageProvider>
           </ThemeProvider>
         </QueryProvider>
       </body>
