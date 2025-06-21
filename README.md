@@ -1,5 +1,9 @@
 # SecureAuth: Full-Stack Authentication & User Management
 
+<p align="center">
+  <img src="SecureAuth.webp" alt="SecureAuth Project Banner" width="800"/>
+</p>
+
 SecureAuth is a robust, full-stack application designed to provide a secure and feature-rich foundation for user authentication and management. It features a modern Next.js frontend and a powerful Express.js backend, incorporating best practices for security and user experience.
 
 ## ✨ Features
