@@ -34,8 +34,8 @@ export default function RootLayout({
         <QueryProvider>
           <ThemeProvider>
             <LanguageProvider>
-              <Toaster />
               {children}
+              <Toaster />
             </LanguageProvider>
           </ThemeProvider>
         </QueryProvider>

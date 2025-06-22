@@ -2,7 +2,7 @@
 
 import { PageInicio } from "@/components/page-inicio";
 
-export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <main className="flex min-h-screen flex-col md:flex-row">
       <div className="flex w-full items-center justify-center bg-white p-8 md:w-1/2">
